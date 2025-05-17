@@ -76,7 +76,13 @@ def get_character_info(name):
     armor_lvls = [extract_reinforce_info(a) for a in armors[:5]]
 
     # 보석
-    gems = data.get("ArmoryGem", {}).get("Gems", [])
+    armory_gem = data.get("ArmoryGem")
+    gems = []
+    if isinstance(armory_gem, dict):
+        raw_gems = armory_gem.get("Gems")
+        if isinstance(raw_gems, list):
+            gems = raw_gems
+
     gem_levels = {"겁화": [], "작열": []}
     for g in gems:
         name = strip_html(g.get("Name", ""))
@@ -115,8 +121,8 @@ def get_character_info(name):
                 if name in arc_points:
                     arc_points[name] = value
 
-    # 최종 출력
-    return f"""🧝 {character_name} ({class_name})
+        # 최종 출력 문자열 생성
+    output = f"""🧝 {character_name} ({class_name})
 서버: {server}
 전투 Lv.{combat_level} / 아이템 Lv.{ilvl}
 
@@ -132,3 +138,16 @@ def get_character_info(name):
 🌟 아크 패시브
 진화: {arc_points['진화']}pt / 깨달음: {arc_points['깨달음']}pt / 도약: {arc_points['도약']}pt
 """
+
+    # 🎁 이스터에그 추가
+    easter_eggs = {
+        "이핼": "깝치지마라 From 이핼",
+        "매일좋은날": "🌞 오늘도 좋은 하루 되세요! - From 매일좋은날",
+        "러봇": "180.72.17 굵 (부심있음) \n첫사랑 이미지 / 실>>>사 \n청초+건실+퇴폐미+고급미 \n군살x, 체육전공, 슬림탄탄 \n내숭업시 질펀하게 쿨하게 함 하고 \n빠이치실분 갠톡주세요",
+        "구또슬": "떼굴떼굴떼굴"
+}
+
+    if character_name in easter_eggs:
+        output += f"\n\n{easter_eggs[character_name]}"
+
+    return output
