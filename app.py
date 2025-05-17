@@ -19,7 +19,8 @@ def kakao_bot():
             name = utterance.replace("/원대", "").strip()
             result = get_roster_info(name)
         elif "/유각" in utterance:
-            result = yugak_first_page_prices()
+            chatroom_id = data.get("userRequest", {}).get("user", {}).get("id", "default")
+            result = yugak_first_page_prices(chatroom_id)
         else:
             result = "❓ 올바른 명령어를 입력해주세요."
 
