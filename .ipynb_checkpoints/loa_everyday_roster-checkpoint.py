@@ -1,6 +1,7 @@
 import re
 
 from collections import defaultdict
+from loa_everyday_init import HEADERS
 
 def get_roster_info(name):
     # 입력 캐릭터의 전투정보실 프로필에서 서버 정보 확인

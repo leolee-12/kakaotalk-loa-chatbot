@@ -2,6 +2,7 @@ import requests
 import re
 import json
 from urllib.parse import quote
+from loa_everyday_init import HEADERS
 
 # HTML 태그 제거 함수 (전역 사용 가능)
 def strip_html(text):
@@ -37,20 +38,6 @@ def get_character_info(name):
     else:
         return "⚠️ 장비 데이터를 불러올 수 없습니다."
 
-    def extract_level(name):
-        m = re.search(r"\+(\d+)", name)
-        return f"+{m.group(1)}" if m else "?"
-
-    def extract_supreme_reinforce(item):
-        tooltip = item.get("Tooltip", "")
-        try:
-            tooltip_json = json.loads(tooltip)
-            reinforce_value = tooltip_json.get("Element_006", {}).get("value", "")
-            m = re.search(r"\(상급 (\d+)단계\)", reinforce_value)
-            return f"(상급 {m.group(1)}단계)" if m else ""
-        except:
-            return ""
-
     # 무기 및 방어구
     weapon = next((e for e in equipment if "무기" in e.get("Type", "")), None)
     armors = [e for e in equipment if "무기" not in e.get("Type", "")]
@@ -60,14 +47,14 @@ def get_character_info(name):
         name = item.get("Name", "")
         tooltip_raw = item.get("Tooltip", "")
         grade = item.get("Grade", "")
-    
-    # 재련 단계: +숫자
+
+        # 재련 단계: +숫자
         reinforce_level = "?"
         m = re.search(r"\+(\d+)", name)
         if m:
             reinforce_level = f"+{m.group(1)}"
 
-    # 상급 재련 단계
+        # 상급 재련 단계
         supreme_text = ""
         try:
             tooltip_json = json.loads(tooltip_raw)
@@ -80,7 +67,7 @@ def get_character_info(name):
         except Exception:
             pass
 
-    # 에스더 무기 처리
+        # 에스더 무기 처리
         prefix = "에스더 " if grade == "에스더" else ""
 
         return f"{prefix}{reinforce_level} {supreme_text}".strip()
@@ -119,7 +106,6 @@ def get_character_info(name):
     # 아크 패시브 (ArkPassive → Points 대응)
     arc_points = {"진화": 0, "깨달음": 0, "도약": 0}
     ark_passive = data.get("ArkPassive")
-
     if isinstance(ark_passive, dict):
         points = ark_passive.get("Points")
         if isinstance(points, list):
@@ -128,7 +114,6 @@ def get_character_info(name):
                 value = int(p.get("Value", 0))
                 if name in arc_points:
                     arc_points[name] = value
-
 
     # 최종 출력
     return f"""🧝 {character_name} ({class_name})
