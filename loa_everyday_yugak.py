@@ -1,6 +1,6 @@
 import time
 
-from loa_everyday_init import HEADERS
+from loa_everyday_init import *
 
 # 카카오톡 채팅방별 쿨타임 관리 딕셔너리
 last_yugak_called_per_room = {}
