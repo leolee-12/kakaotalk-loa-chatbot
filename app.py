@@ -10,9 +10,17 @@ app = Flask(__name__)
 def kakao_bot():
     try:
         data = request.get_json()
+
+        # 기본 utterance 추출
         utterance = data.get("userRequest", {}).get("utterance", "").strip()
 
-        if utterance.startswith("/정보"):
+        # 슬롯 방식 우선 처리
+        params = data.get("action", {}).get("params", {})
+        char_name_slot = params.get("캐릭터명", "").strip()
+
+        if char_name_slot:
+            result = get_character_info(char_name_slot)
+        elif utterance.startswith("/정보"):
             name = utterance.replace("/정보", "").strip()
             result = get_character_info(name)
         elif utterance.startswith("/원대"):
@@ -24,7 +32,6 @@ def kakao_bot():
         else:
             result = "❓ 올바른 명령어를 입력해주세요."
 
-        # 안전한 문자열만 응답하도록 보장
         if not isinstance(result, str):
             result = "⚠️ 결과를 불러올 수 없습니다."
 
