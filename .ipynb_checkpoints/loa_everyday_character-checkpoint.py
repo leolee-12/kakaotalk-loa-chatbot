@@ -1,3 +1,9 @@
+import requests
+import re
+import json
+from urllib.parse import quote
+from loa_everyday_init import HEADERS
+
 def get_character_info(name):
     encoded_name = quote(name)
     url = f"https://developer-lostark.game.onstove.com/armories/characters/{encoded_name}"
