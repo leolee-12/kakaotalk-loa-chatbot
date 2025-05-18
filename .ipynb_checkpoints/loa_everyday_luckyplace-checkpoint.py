@@ -25,4 +25,4 @@ def get_lucky_place():
     if _lucky_cache["date"] != today:
         _lucky_cache["date"] = today
         _lucky_cache["place"] = random.choice(LUCKY_PLACES)
-    return f"🎲 오늘의 재련 명당은...\n {_lucky_cache['place']} 입니다!"
+    return f" 오늘의 재련 명당은...\n {_lucky_cache['place']} 입니다!"
