@@ -4,6 +4,10 @@ import json
 from urllib.parse import quote
 from loa_everyday_init import HEADERS
 
+# HTML 태그 제거 함수 (전역 사용 가능)
+def strip_html(text):
+    return re.sub(r"<[^>]+>", "", text or "")
+
 def get_character_info(name):
     encoded_name = quote(name)
     url = f"https://developer-lostark.game.onstove.com/armories/characters/{encoded_name}"
