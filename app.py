@@ -3,6 +3,9 @@ import json
 from loa_everyday_character import get_character_info
 from loa_everyday_roster import get_roster_info
 from loa_everyday_yugak import yugak_first_page_prices
+from loa_everyday_luckyplace import get_lucky_place
+from loa_everyday_auction import calc_auction_price
+from loa_everyday_gamble import run_gamble
 
 app = Flask(__name__)
 
@@ -20,15 +23,35 @@ def kakao_bot():
 
         if char_name_slot:
             result = get_character_info(char_name_slot)
+
         elif utterance.startswith("/정보"):
             name = utterance.replace("/정보", "").strip()
             result = get_character_info(name)
+
         elif utterance.startswith("/원대"):
             name = utterance.replace("/원대", "").strip()
             result = get_roster_info(name)
+
         elif "/유각" in utterance:
             chatroom_id = data.get("userRequest", {}).get("user", {}).get("id", "default")
             result = yugak_first_page_prices(chatroom_id)
+
+        elif utterance.startswith("/명당"):
+            result = get_lucky_place()
+
+        elif utterance.startswith("/경매"):
+            try:
+                number = int(utterance.replace("/경매", "").strip())
+                if number <= 0:
+                    result = "⚠️ 0보다 큰 숫자를 입력해주세요."
+                else:
+                    result = calc_auction_price(number)
+            except ValueError:
+                result = "⚠️ 숫자를 올바르게 입력해주세요. 예: `/경매 12345`"
+
+        elif utterance.startswith("/도박"):
+            result = run_gamble()
+
         else:
             result = "❓ 올바른 명령어를 입력해주세요."
 
